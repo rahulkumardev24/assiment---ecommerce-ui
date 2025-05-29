@@ -1,9 +1,11 @@
 import 'package:application/helper/custom_text_style.dart';
 import 'package:application/widgets/categories_item_card.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../widgets/exclusive_card.dart';
+import 'login_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -264,7 +266,24 @@ class _HomeScreenState extends State<HomeScreen> {
 
       /// chat button
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {},
+        onPressed: () async {
+          try {
+            await FirebaseAuth.instance.signOut();
+
+            // Navigate to Login Screen after logout
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => LoginScreen()),
+            );
+          } catch (e) {
+            // Optional: handle errors
+            print('Logout error: $e');
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("Logout failed. Please try again.")),
+            );
+          }
+        },
+
         backgroundColor: Colors.red,
         foregroundColor: Colors.white,
         elevation: 1,

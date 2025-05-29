@@ -1,6 +1,7 @@
 import 'package:application/helper/custom_text_style.dart';
 import 'package:application/screen/home_screen.dart';
 import 'package:application/widgets/navigation_icon_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -11,6 +12,9 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     final mqData = MediaQuery.of(context).size;
@@ -45,7 +49,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                 ),
-          
+
                 SizedBox(height: mqData.height * 0.05),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -57,20 +61,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         "please enter your credentials to proceed",
                         style: myTextStyle18(),
                       ),
-          
+
                       SizedBox(height: 21),
-          
+
                       /// email
                       TextField(
+                        controller: emailController,
                         decoration: InputDecoration(
                           hintText: "Your email",
                           hintStyle: myTextStyle18(textColor: Colors.black45),
                         ),
                       ),
-          
+
                       SizedBox(height: 12),
-          
+
                       TextField(
+                        controller: passwordController,
                         decoration: InputDecoration(
                           hintText: "Create password",
                           hintStyle: myTextStyle18(textColor: Colors.black45),
@@ -78,16 +84,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ),
                       SizedBox(height: 12),
-                      TextField(
-                        decoration: InputDecoration(
-                          hintText: "Referral code(Optional) ",
-                          hintStyle: myTextStyle18(textColor: Colors.black45),
-                        ),
-                      ),
                     ],
                   ),
                 ),
-          
+
                 SizedBox(height: mqData.height * 0.1),
                 Padding(
                   padding: const EdgeInsets.only(right: 16.0),
@@ -95,13 +95,50 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       InkWell(
-                        onTap: () {
-                          /// Navigate to home screen
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(builder: (_) => HomeScreen()),
-                          );
+                        onTap: () async {
+                          String email = emailController.text.trim();
+                          String password = passwordController.text.trim();
+
+                          if (email.isEmpty || password.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  "Please fill the required fields",
+                                  style: myTextStyle18(textColor: Colors.white),
+                                ),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          } else {
+                            try {
+                              // Create user with email and password
+                              await FirebaseAuth.instance
+                                  .createUserWithEmailAndPassword(
+                                    email: email,
+                                    password: password,
+                                  );
+
+                              // Navigate to home screen on success
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(builder: (_) => HomeScreen()),
+                              );
+                            } on FirebaseAuthException catch (e) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    "Register failed",
+                                    style: myTextStyle18(
+                                      textColor: Colors.white,
+                                    ),
+                                  ),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            }
+                          }
                         },
+
                         child: Container(
                           height: 60,
                           width: 60,

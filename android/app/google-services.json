@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "186176620528",
+    "project_id": "assement-78370",
+    "storage_bucket": "assement-78370.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:186176620528:android:ff609beb39302f7894ff35",
+        "android_client_info": {
+          "package_name": "com.example.application"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnnVNCDvTZQZP74QW1Cd9FWRdQv0Rzavc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
